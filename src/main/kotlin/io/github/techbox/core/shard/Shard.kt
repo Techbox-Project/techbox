@@ -20,7 +20,7 @@ class Shard(private val id: Int) {
         @Synchronized
         override fun onReady(@Nonnull event: ReadyEvent) {
             jda = event.jda
-            jda.presence.activity = Activity.playing("Hi, I'm Techbox")
+            jda.presence.activity = Activity.playing("Hi, I'm Techbox [$id]")
         }
     }
 
