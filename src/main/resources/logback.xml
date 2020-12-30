@@ -1,0 +1,11 @@
+<configuration debug="false">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%boldMagenta([%d{HH:mm:ss}]) [%green(%t)/%highlight(%level)] %boldBlue([%logger{0}] %X{jda.shard}): %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

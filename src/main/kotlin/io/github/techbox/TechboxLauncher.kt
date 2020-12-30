@@ -1,6 +1,7 @@
 package io.github.techbox
 
 import io.github.techbox.core.Techbox
+import io.github.techbox.core.logging.LogFilter
 import io.github.techbox.data.Config
 import io.github.techbox.utils.logger
 import org.slf4j.Logger
@@ -24,6 +25,7 @@ object TechboxLauncher {
 
     fun TechboxLauncher() {
         log.info("Starting Techbox v0.0.1")
+        log.info("Filtering all logs below {}", LogFilter.LEVEL)
 
         core = Techbox(config)
         core.start()
