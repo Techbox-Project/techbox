@@ -32,6 +32,6 @@ tasks.withType<Test> {
 // Required to fix IntelliJ bug
 tasks {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.11"
+        kotlinOptions.jvmTarget = "11"
     }
 }
