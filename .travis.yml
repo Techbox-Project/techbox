@@ -15,4 +15,4 @@ cache:
     - "$HOME/.m2/repository/"
 
 script:
-  - ./gradlew build
+  - ./gradlew build --no-daemon
