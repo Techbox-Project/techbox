@@ -7,3 +7,6 @@ build/
 # Ignore IDEA files
 .idea/
 *.iml
+
+# Runtime files
+config.json
