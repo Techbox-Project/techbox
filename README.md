@@ -7,7 +7,7 @@ Comandos atuais do bot (talvez redirecionar para uma Wiki do projeto)
 # Contributing
 Pull requests are welcome, but it only be accepted if follows these patterns:
 
-- [Code style](https://google.github.io/styleguide/javaguide.html)
+- [Code style](https://developer.android.com/kotlin/style-guide)
 
 - [Commit format](https://gist.github.com/sasuked/cb31fdd9aacb928e37d11db788ce517c)
 
