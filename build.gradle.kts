@@ -22,6 +22,7 @@ dependencies {
     implementation("net.dv8tion:JDA:4.2.0_224")
     implementation("com.fasterxml.jackson.core:jackson-core:2.12.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.0")
+    implementation("com.google.guava:guava:30.1-jre")
     testImplementation("io.kotest:kotest-runner-junit5:4.3.2")
 }
 
