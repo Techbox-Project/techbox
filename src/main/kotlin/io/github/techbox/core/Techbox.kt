@@ -106,7 +106,7 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
                 .addEventListenerProviders(
                     // TODO Event listener providers (commands, members, etc) go here
                     listOf(
-                        IntFunction { id -> CommandListener(commandProcessor) },
+                        IntFunction { CommandListener(commandProcessor) },
                         IntFunction { id -> getShard(id).listener }
                     ))
                 .setEventManagerProvider { id -> getShard(id).manager }

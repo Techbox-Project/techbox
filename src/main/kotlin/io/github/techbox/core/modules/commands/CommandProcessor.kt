@@ -15,16 +15,21 @@ class CommandProcessor {
 
         val selfUserMention = event.jda.selfUser.asMention
         val selfMemberMention = event.jda.selfUser.asMention.replace("@", "@!")
-        if (usedPrefix != null) {
-            rawCmd = rawCmd.substring(usedPrefix.length)
-        } else if (rawCmd.startsWith("$selfUserMention ")) {
-            rawCmd = rawCmd.substring("$selfUserMention ".length)
-            usedPrefix = selfUserMention
-        } else if (rawCmd.startsWith("$selfMemberMention ")) {
-            rawCmd = rawCmd.substring("$selfMemberMention ".length)
-            usedPrefix = selfUserMention
-        } else {
-            return false
+        when {
+            usedPrefix != null -> {
+                rawCmd = rawCmd.substring(usedPrefix.length)
+            }
+            rawCmd.startsWith("$selfUserMention ") -> {
+                rawCmd = rawCmd.substring("$selfUserMention ".length)
+                usedPrefix = selfUserMention
+            }
+            rawCmd.startsWith("$selfMemberMention ") -> {
+                rawCmd = rawCmd.substring("$selfMemberMention ".length)
+                usedPrefix = selfUserMention
+            }
+            else -> {
+                return false
+            }
         }
 
         var args = rawCmd.split(" ")

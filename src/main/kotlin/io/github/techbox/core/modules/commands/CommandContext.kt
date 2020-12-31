@@ -18,10 +18,14 @@ class CommandContext(
     }
 
     fun reply(embed: MessageEmbed) {
-        message.reply(embed)
+        message.reply(embed).queue()
+    }
+
+    fun reply(reply: Message) {
+        message.reply(reply).queue()
     }
 
     fun replyEmbed(builder: EmbedBuilder = EmbedBuilder(), init: EmbedBuilder.() -> Unit) =
-        message.reply(builder.also(init).build())
+        message.reply(builder.also(init).build()).queue()
 
 }
