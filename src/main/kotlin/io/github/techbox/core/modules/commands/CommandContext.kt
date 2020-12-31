@@ -10,7 +10,7 @@ class CommandContext(
     val command: String,
     val args: List<String>
 ) {
-    val author = message.author
+    val author get() = message.author
 
     fun reply(content: String) {
         message.reply(content).queue()

@@ -127,7 +127,7 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
             shardStartListener.latch = CountDownLatch(latchCount)
             this.shardManager = shardManager.build()
 
-            launch {
+            launch(CoroutineName("shard-ready-waiter")) {
                 log.info("CountdownLatch started: Awaiting for $latchCount shards to be counted down to start PostLoad.")
                 try {
                     shardStartListener.latch.await()
