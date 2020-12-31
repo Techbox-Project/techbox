@@ -24,11 +24,13 @@ class ModuleRegistry {
 
     class ModuleProxy(private val name: String, val clazz: Class<*>) {
         private val log = logger<ModuleRegistry>()
+        private lateinit var instance: Any
         private var enabled = false
 
         fun enable() {
             try {
-                val value = clazz.getMethod("onLoad").invoke(null)
+                val instance = clazz.getDeclaredConstructor().newInstance()
+                val value = clazz.getMethod("onLoad").invoke(instance)
                 enabled = value !is Boolean || value
             } catch (e: Exception) {
                 log.error("Caught error while loading module $name", e)
