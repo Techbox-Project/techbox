@@ -1,5 +1,6 @@
 package io.github.techbox.utils
 
+import net.dv8tion.jda.api.entities.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -47,3 +48,6 @@ private fun formatUnit(amount: Long, baseName: String): String {
         "1 $baseName"
     } else amount.toString() + " " + baseName + "s"
 }
+
+val User.nameAndDiscriminator: String
+    get() = this.name + "#" + this.discriminator

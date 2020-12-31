@@ -8,7 +8,7 @@ import java.util.*
 
 class CommandRegistry {
     val log: Logger = logger<CommandRegistry>()
-    private val commands: HashMap<String, ICommand> = HashMap()
+    public val commands: HashMap<String, ICommand> = HashMap()
     private val aliases: HashMap<String, String> = HashMap()
 
     fun register(module: ModuleProxy, command: ICommand) {
