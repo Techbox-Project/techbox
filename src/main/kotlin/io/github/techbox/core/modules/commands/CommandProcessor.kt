@@ -11,13 +11,18 @@ class CommandProcessor {
 
         val prefixes = TechboxLauncher.config.prefix
 
-        val usedPrefix = prefixes.firstOrNull { rawCmd.toLowerCase().startsWith(it) }
+        var usedPrefix = prefixes.firstOrNull { rawCmd.toLowerCase().startsWith(it) }
 
-        val selfMention = event.jda.selfUser.asMention
+        val selfUserMention = event.jda.selfUser.asMention
+        val selfMemberMention = event.jda.selfUser.asMention.replace("@", "@!")
         if (usedPrefix != null) {
             rawCmd = rawCmd.substring(usedPrefix.length)
-        } else if (rawCmd.startsWith("$selfMention ")) {
-            rawCmd = rawCmd.substring("$selfMention ".length)
+        } else if (rawCmd.startsWith("$selfUserMention ")) {
+            rawCmd = rawCmd.substring("$selfUserMention ".length)
+            usedPrefix = selfUserMention
+        } else if (rawCmd.startsWith("$selfMemberMention ")) {
+            rawCmd = rawCmd.substring("$selfMemberMention ".length)
+            usedPrefix = selfUserMention
         } else {
             return false
         }
@@ -26,7 +31,7 @@ class CommandProcessor {
         val cmdName = args[0]
         args = args.drop(1)
 
-        TechboxLauncher.core.commandRegistry.execute(CommandContext(event.message, cmdName, args))
+        TechboxLauncher.core.commandRegistry.execute(CommandContext(usedPrefix, event.message, cmdName, args))
         return true
     }
 

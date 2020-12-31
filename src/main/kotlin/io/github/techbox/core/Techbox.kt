@@ -77,6 +77,7 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
             val defaultDeniedMentions =
                 EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE)
             MessageAction.setDefaultMentions(EnumSet.complementOf(defaultDeniedMentions))
+            MessageAction.setDefaultMentionRepliedUser(false)
 
             val enabledGatewayIntents = listOf(
                 GatewayIntent.GUILD_MESSAGES,
