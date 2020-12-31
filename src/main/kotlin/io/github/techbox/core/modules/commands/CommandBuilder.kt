@@ -9,15 +9,21 @@ class CommandBuilder(private val command: Array<String>) {
     var autoRegister = true
     var category: Category? = null
 
+    private var helpReceiver: (HelpReceiver.() -> Unit)? = null
     private var executor: CommandExecutor? = null
+
 
     fun build(): ICommand {
         require(executor != null)
-        return Command(command, autoRegister, category, executor!!)
+        return Command(command, autoRegister, category, helpReceiver, executor!!)
     }
 
     fun execute(block: CommandExecutor) {
         this.executor = block
+    }
+
+    fun help(body: HelpReceiver.() -> Unit) {
+        this.helpReceiver = body
     }
 }
 

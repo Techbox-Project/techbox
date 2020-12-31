@@ -1,5 +1,6 @@
 package io.github.techbox.utils
 
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -51,3 +52,5 @@ private fun formatUnit(amount: Long, baseName: String): String {
 
 val User.nameAndDiscriminator: String
     get() = this.name + "#" + this.discriminator
+
+fun EmbedBuilder.addField(name: String, value: String) = addField(name, value, false)

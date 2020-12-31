@@ -1,6 +1,7 @@
 package io.github.techbox.core.modules.commands
 
 import io.github.techbox.core.modules.ModuleRegistry
+import net.dv8tion.jda.api.entities.MessageEmbed
 
 
 interface ICommand {
@@ -9,4 +10,5 @@ interface ICommand {
     val autoRegister: Boolean
     val category: Category?
     suspend fun execute(ctx: CommandContext)
+    fun onHelp(): MessageEmbed
 }
