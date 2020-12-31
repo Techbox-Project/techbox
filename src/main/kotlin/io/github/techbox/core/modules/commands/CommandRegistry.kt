@@ -26,6 +26,8 @@ class CommandRegistry {
         if (command != null) {
             command.execute(ctx)
             return true
+        } else if (ctx.usedPrefix == ctx.message.jda.selfUser.asMention) { // https://github.com/meew0/discord-bot-best-practices
+            ctx.message.reply("❓Unknown command").queue()
         }
         return false
     }

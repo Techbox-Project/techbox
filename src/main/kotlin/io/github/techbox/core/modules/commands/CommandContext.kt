@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed
 
 
 class CommandContext(
+    val usedPrefix: String,
     val message: Message,
     val command: String,
     val args: List<String>
