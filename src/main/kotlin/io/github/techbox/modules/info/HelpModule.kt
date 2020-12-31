@@ -8,8 +8,12 @@ import io.github.techbox.core.modules.commands.*
 import io.github.techbox.data.Config.prefix
 import io.github.techbox.utils.addField
 import io.github.techbox.utils.nameAndDiscriminator
+import me.xdrop.fuzzywuzzy.FuzzySearch
+import me.xdrop.fuzzywuzzy.model.BoundExtractedResult
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
+
 
 val commandRegistry = TechboxLauncher.core.commandRegistry
 
@@ -76,18 +80,34 @@ fun CommandContext.sendHelp() {
     }
 }
 
-fun CommandContext.findHelp(args: String) {
-    val toHelp = commandRegistry.commands[args.toLowerCase()]
+fun findAnything(args: String): Any? {
+    return commandRegistry.commands[args.toLowerCase()]
         ?: commandRegistry.commands[commandRegistry.aliases.getOrDefault(args.toLowerCase(), "")]
         ?: Category.values()
             .firstOrNull { it.name.equals(args, ignoreCase = true) || it.categoryName.equals(args, ignoreCase = true) }
+}
+
+fun CommandContext.findHelp(args: String) {
+    var toHelp = findAnything(args)
+    var extra: String? = null
+    if (toHelp == null) {
+        val possibilities = commandRegistry.commands.values.map { it.aliases[0] }
+        val match: BoundExtractedResult<String> = FuzzySearch.extractOne(
+            args.toLowerCase(), possibilities
+        ) { it -> it }
+        if (match.score > 70) {
+            val newArg = match.referent
+            toHelp = findAnything(newArg)
+            if (toHelp != null) extra = "Couldn't find anything named `$args`, did you mean `$newArg`?"
+        }
+    }
     var help: MessageEmbed? = null
 
-    when {
-        toHelp is ICommand || toHelp is Command -> {
+    when (toHelp) {
+        is ICommand, is Command -> {
             help = (toHelp as ICommand).onHelp()
         }
-        toHelp is Category -> {
+        is Category -> {
             help = EmbedBuilder().also {
                 it.setAuthor("Techbox | Help: ${toHelp.categoryName}")
                 it.setDescription(
@@ -116,11 +136,11 @@ fun CommandContext.findHelp(args: String) {
                 )
             }.build()
         }
-        help == null -> {
+        null -> {
             reply("❌There's no command or category with that name!")
             return
         }
     }
-    if (help != null) reply(help)
+    if (help != null) reply(MessageBuilder().setEmbed(help).append(extra).build())
     else reply("❌Sorry, there is no help available for that command.")
 }

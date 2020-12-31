@@ -26,6 +26,7 @@ dependencies {
     implementation("com.google.guava:guava:30.1-jre")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.classgraph:classgraph:4.8.98")
+    implementation("me.xdrop:fuzzywuzzy:1.3.1")
     testImplementation("io.kotest:kotest-runner-junit5:4.3.2")
 }
 
