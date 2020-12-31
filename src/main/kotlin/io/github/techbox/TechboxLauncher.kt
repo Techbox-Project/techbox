@@ -10,8 +10,8 @@ import kotlin.system.exitProcess
 
 object TechboxLauncher {
     private val log: Logger = logger<TechboxLauncher>()
-    private val config = Config
-    private lateinit var core: Techbox
+    val config = Config
+    lateinit var core: Techbox
 
     @JvmStatic
     fun main(args: Array<String>) {

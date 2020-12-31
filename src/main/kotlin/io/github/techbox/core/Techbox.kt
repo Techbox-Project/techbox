@@ -1,10 +1,17 @@
 package io.github.techbox.core
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
+import io.github.classgraph.ClassGraph
+import io.github.techbox.core.modules.Module
+import io.github.techbox.core.modules.ModuleRegistry
+import io.github.techbox.core.modules.commands.CommandRegistry
 import io.github.techbox.core.shard.Shard
 import io.github.techbox.data.Config
 import io.github.techbox.utils.formatDuration
 import io.github.techbox.utils.logger
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.GenericEvent
@@ -28,16 +35,25 @@ import javax.annotation.Nonnull
 import javax.security.auth.login.LoginException
 
 
-class Techbox(private val config: Config) {
+class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(CoroutineName("Techbox")) {
     private val log: Logger = logger<Techbox>()
     private var loadState: LoadState = LoadState.PRELOAD
     private val shards: ConcurrentHashMap<Int, Shard> = ConcurrentHashMap()
-    private val threadPool = Executors.newCachedThreadPool(
-        ThreadFactoryBuilder().setNameFormat("Techbox Thread-%d").build()
-    )
     private lateinit var shardManager: ShardManager
+    val moduleRegistry = ModuleRegistry()
+    val commandRegistry = CommandRegistry()
 
     fun start() {
+        val modules = lookForAnnotatedOn("io.github.techbox.modules", Module::class.java)
+
+        for (module in modules) {
+            try {
+                moduleRegistry.register(module)
+            } catch (e: Exception) {
+                log.error("Caught error while registering module", e)
+            }
+        }
+
         startShards()
     }
 
@@ -111,7 +127,7 @@ class Techbox(private val config: Config) {
             shardStartListener.latch = CountDownLatch(latchCount)
             this.shardManager = shardManager.build()
 
-            threadPool.submit {
+            launch {
                 log.info("CountdownLatch started: Awaiting for $latchCount shards to be counted down to start PostLoad.")
                 try {
                     shardStartListener.latch.await()
@@ -140,13 +156,22 @@ class Techbox(private val config: Config) {
         return shards.computeIfAbsent(id) { Shard(id) }
     }
 
+    private fun lookForAnnotatedOn(packageName: String, annotation: Class<out Annotation>): Set<Class<*>> {
+        return ClassGraph()
+            .acceptPackages(packageName)
+            .enableAnnotationInfo()
+            .scan(2)
+            .allClasses.filter { it.hasAnnotation(annotation.name) }
+            .map { it.loadClass() }
+            .toSet()
+    }
+
     private class ShardStartListener : EventListener {
         lateinit var latch: CountDownLatch
 
         override fun onEvent(@Nonnull event: GenericEvent) {
             if (event is ReadyEvent) {
-                val sm = event.getJDA().shardManager
-                    ?: throw AssertionError()
+                event.getJDA().shardManager ?: throw AssertionError()
                 latch.countDown()
             }
         }
