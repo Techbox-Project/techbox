@@ -2,8 +2,10 @@ package io.github.techbox.core
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.github.classgraph.ClassGraph
+import io.github.techbox.core.listeners.CommandListener
 import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.ModuleRegistry
+import io.github.techbox.core.modules.commands.CommandProcessor
 import io.github.techbox.core.modules.commands.CommandRegistry
 import io.github.techbox.core.shard.Shard
 import io.github.techbox.data.Config
@@ -40,8 +42,10 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
     private var loadState: LoadState = LoadState.PRELOAD
     private val shards: ConcurrentHashMap<Int, Shard> = ConcurrentHashMap()
     private lateinit var shardManager: ShardManager
+    private val commandProcessor = CommandProcessor()
     val moduleRegistry = ModuleRegistry()
     val commandRegistry = CommandRegistry()
+
 
     fun start() {
         val modules = lookForAnnotatedOn("io.github.techbox.modules", Module::class.java)
@@ -101,6 +105,7 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
                 .addEventListenerProviders(
                     // TODO Event listener providers (commands, members, etc) go here
                     listOf(
+                        IntFunction { id -> CommandListener(commandProcessor) },
                         IntFunction { id -> getShard(id).listener }
                     ))
                 .setEventManagerProvider { id -> getShard(id).manager }
