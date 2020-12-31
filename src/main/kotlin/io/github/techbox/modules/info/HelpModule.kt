@@ -91,9 +91,8 @@ fun CommandContext.findHelp(args: String) {
     var toHelp = findAnything(args)
     var extra: String? = null
     if (toHelp == null) {
-        val possibilities = commandRegistry.commands.values.map { it.aliases[0] }
         val match: BoundExtractedResult<String> = FuzzySearch.extractOne(
-            args.toLowerCase(), possibilities
+            args.toLowerCase(), commandRegistry.helpPossibilities
         ) { it -> it }
         if (match.score > 70) {
             val newArg = match.referent

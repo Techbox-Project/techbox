@@ -1,6 +1,7 @@
 package io.github.techbox.core.modules.commands
 
 import io.github.techbox.core.modules.ModuleRegistry.ModuleProxy
+import io.github.techbox.modules.info.commandRegistry
 import io.github.techbox.utils.logger
 import org.slf4j.Logger
 import java.util.*
@@ -10,6 +11,12 @@ class CommandRegistry {
     val log: Logger = logger<CommandRegistry>()
     val commands: HashMap<String, ICommand> = HashMap()
     val aliases: HashMap<String, String> = HashMap()
+    val helpPossibilities by lazy {
+        listOf(
+            commandRegistry.commands.values.map { it.aliases[0] },
+            Category.values().map { it.name.toLowerCase() }
+        ).flatten()
+    }
 
     fun register(module: ModuleProxy, command: ICommand) {
         command.module = module
