@@ -1,16 +1,15 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm") version "1.4.21"
     application
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+configure<ApplicationPluginConvention> {
+    mainClassName = "io.github.techbox.TechboxLauncher"
 }
 
-application {
-    mainClass.set("io.github.techbox.TechboxLauncher")
-}
 
 repositories {
     mavenCentral()
@@ -27,6 +26,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.github.classgraph:classgraph:4.8.98")
     implementation("me.xdrop:fuzzywuzzy:1.3.1")
+    implementation("net.jodah:expiringmap:0.5.9")
     testImplementation("io.kotest:kotest-runner-junit5:4.3.2")
 }
 
@@ -34,9 +34,13 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-// Required to fix IntelliJ bug
 tasks {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.jvmTarget = "11"
+    }
+
+    withType<ShadowJar> {
+        project.configurations.implementation.isCanBeResolved = true
+        configurations = listOf(project.configurations.implementation.get())
     }
 }

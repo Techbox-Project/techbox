@@ -1,5 +1,3 @@
-
-
 package io.github.techbox.modules.info
 
 import io.github.techbox.TechboxLauncher
@@ -85,7 +83,12 @@ class HelpModule {
         return commandRegistry.commands[args.toLowerCase()]
             ?: commandRegistry.commands[commandRegistry.aliases.getOrDefault(args.toLowerCase(), "")]
             ?: Category.values()
-                .firstOrNull { it.name.equals(args, ignoreCase = true) || it.categoryName.equals(args, ignoreCase = true) }
+                .firstOrNull {
+                    it.name.equals(args, ignoreCase = true) || it.categoryName.equals(
+                        args,
+                        ignoreCase = true
+                    )
+                }
     }
 
     fun CommandContext.findHelp(args: String) {
@@ -105,7 +108,7 @@ class HelpModule {
 
         when (toHelp) {
             is ICommand, is Command -> {
-                help = (toHelp as ICommand).onHelp()
+                help = (toHelp as ICommand).onHelp(this)
             }
             is Category -> {
                 help = EmbedBuilder().also {
@@ -141,7 +144,7 @@ class HelpModule {
                 return
             }
         }
-        if (help != null) reply(MessageBuilder().setEmbed(help).append(extra).build())
+        if (help != null) reply(MessageBuilder().setEmbed(help).append(extra ?: "").build())
         else reply("❌Sorry, there is no help available for that command.")
     }
 

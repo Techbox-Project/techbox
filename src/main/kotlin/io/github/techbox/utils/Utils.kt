@@ -1,6 +1,8 @@
 package io.github.techbox.utils
 
+import io.github.techbox.core.listeners.ReactionListener
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,3 +56,9 @@ val User.nameAndDiscriminator: String
     get() = this.name + "#" + this.discriminator
 
 fun EmbedBuilder.addField(name: String, value: String) = addField(name, value, false)
+
+fun Message.onReactionAdd(timeoutSeconds: Long = 120, body: ReactionListener.ReactionOperation.() -> Unit): Unit = run {
+    val op = ReactionListener.ReactionOperation()
+    body.invoke(op)
+    ReactionListener.activeOperations.put(this.idLong, op, timeoutSeconds, TimeUnit.SECONDS)
+}
