@@ -9,6 +9,7 @@ typealias CommandExecutor = suspend CommandContext.() -> Unit
 class CommandBuilder(private val command: Array<String>) {
     var autoRegister = true
     var category: Category? = null
+    var selfPermissions: List<Permission> = mutableListOf()
     var discordPermissions: List<Permission> = mutableListOf()
 
     private var helpReceiver: (HelpReceiver.() -> Unit)? = null
@@ -17,7 +18,7 @@ class CommandBuilder(private val command: Array<String>) {
 
     fun build(): ICommand {
         require(executor != null)
-        return Command(command, autoRegister, category, discordPermissions, helpReceiver, executor!!)
+        return Command(command, autoRegister, category, selfPermissions, discordPermissions, helpReceiver, executor!!)
     }
 
     fun execute(block: CommandExecutor) {

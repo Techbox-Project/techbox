@@ -10,6 +10,7 @@ interface ICommand {
     val aliases: Array<String>
     val autoRegister: Boolean
     val category: Category?
+    val selfPermissions: List<Permission>
     val discordPermissions: List<Permission>
     suspend fun execute(ctx: CommandContext)
     fun onHelp(context: CommandContext?): MessageEmbed
