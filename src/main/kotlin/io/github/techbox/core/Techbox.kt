@@ -3,6 +3,7 @@ package io.github.techbox.core
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.github.classgraph.ClassGraph
 import io.github.techbox.core.listeners.CommandListener
+import io.github.techbox.core.listeners.ReactionListener
 import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.ModuleRegistry
 import io.github.techbox.core.modules.commands.CommandProcessor
