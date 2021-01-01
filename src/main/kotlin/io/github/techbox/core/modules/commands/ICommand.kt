@@ -12,5 +12,5 @@ interface ICommand {
     val category: Category?
     val discordPermissions: List<Permission>
     suspend fun execute(ctx: CommandContext)
-    fun onHelp(): MessageEmbed
+    fun onHelp(context: CommandContext?): MessageEmbed
 }

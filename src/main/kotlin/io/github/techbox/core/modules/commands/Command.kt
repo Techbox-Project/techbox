@@ -29,9 +29,9 @@ class Command(
         executor.invoke(ctx)
     }
 
-    override fun onHelp(): MessageEmbed {
+    override fun onHelp(context: CommandContext?): MessageEmbed {
         val builder = EmbedBuilder()
-        val help = if (helpHandler != null) HelpReceiver().apply(helpHandler) else HelpReceiver()
+        val help = if (helpHandler != null) HelpReceiver(context).apply(helpHandler) else HelpReceiver(context)
         builder.setColor(Color.GREEN)
         builder.setAuthor(help.title ?: "${aliases[0].capitalize()} Command")
         val effectiveAliases = if (help.aliases.isEmpty()) aliases else help.aliases

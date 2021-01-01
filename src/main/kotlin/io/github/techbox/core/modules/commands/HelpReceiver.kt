@@ -5,7 +5,7 @@ import io.github.techbox.data.Config.prefix
 import net.dv8tion.jda.api.entities.MessageEmbed
 
 
-class HelpReceiver {
+class HelpReceiver(val commandContext: CommandContext?) {
     var title: String? = null
     var aliases: Array<String> = emptyArray()
     var fields: MutableList<MessageEmbed.Field> = mutableListOf()
