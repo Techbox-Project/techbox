@@ -12,6 +12,7 @@ class CommandContext(
     val args: List<String>
 ) {
     val author get() = message.author
+    val member get() = message.member
 
     fun reply(content: String) {
         message.reply(content).queue()

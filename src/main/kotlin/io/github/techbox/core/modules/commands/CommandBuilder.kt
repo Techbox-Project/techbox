@@ -1,6 +1,7 @@
 package io.github.techbox.core.modules.commands
 
 import io.github.techbox.TechboxLauncher
+import net.dv8tion.jda.api.Permission
 
 
 typealias CommandExecutor = suspend CommandContext.() -> Unit
@@ -8,6 +9,7 @@ typealias CommandExecutor = suspend CommandContext.() -> Unit
 class CommandBuilder(private val command: Array<String>) {
     var autoRegister = true
     var category: Category? = null
+    var discordPermissions: List<Permission> = mutableListOf()
 
     private var helpReceiver: (HelpReceiver.() -> Unit)? = null
     private var executor: CommandExecutor? = null
@@ -15,7 +17,7 @@ class CommandBuilder(private val command: Array<String>) {
 
     fun build(): ICommand {
         require(executor != null)
-        return Command(command, autoRegister, category, helpReceiver, executor!!)
+        return Command(command, autoRegister, category, discordPermissions, helpReceiver, executor!!)
     }
 
     fun execute(block: CommandExecutor) {
