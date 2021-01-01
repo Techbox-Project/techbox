@@ -101,6 +101,7 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
                 .setChunkingFilter(ChunkingFilter.NONE)
                 .addEventListeners(
                     // TODO Event listeners go here
+                    ReactionListener(),
                     shardStartListener
                 )
                 .addEventListenerProviders(
