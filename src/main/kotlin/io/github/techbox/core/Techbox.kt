@@ -42,8 +42,8 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
     private val log: Logger = logger<Techbox>()
     private var loadState: LoadState = LoadState.PRELOAD
     private val shards: ConcurrentHashMap<Int, Shard> = ConcurrentHashMap()
-    private lateinit var shardManager: ShardManager
     private val commandProcessor = CommandProcessor()
+    lateinit var shardManager: ShardManager
     val moduleRegistry = ModuleRegistry()
     val commandRegistry = CommandRegistry()
 

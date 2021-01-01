@@ -18,6 +18,10 @@ class CommandContext(
         message.reply(content).queue()
     }
 
+    fun replyBlocking(content: String): Message {
+        return message.reply(content).complete()
+    }
+
     fun reply(embed: MessageEmbed) {
         message.reply(embed).queue()
     }
