@@ -141,7 +141,7 @@ class HelpModule {
                 return
             }
         }
-        if (help != null) reply(MessageBuilder().setEmbed(help).append(extra).build())
+        if (help != null) reply(MessageBuilder().setEmbed(help).append(extra ?: "").build())
         else reply("❌Sorry, there is no help available for that command.")
     }
 
