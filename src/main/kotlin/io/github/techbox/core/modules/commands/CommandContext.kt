@@ -1,9 +1,8 @@
 package io.github.techbox.core.modules.commands
 
-import net.dv8tion.jda.api.EmbedBuilder
+import io.github.techbox.utils.TechboxEmbedBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageEmbed
-
 
 class CommandContext(
     val usedPrefix: String,
@@ -30,7 +29,7 @@ class CommandContext(
         message.reply(reply).queue()
     }
 
-    fun replyEmbed(builder: EmbedBuilder = EmbedBuilder(), init: EmbedBuilder.() -> Unit) =
-        message.reply(builder.also(init).build()).queue()
+    fun replyEmbed(body: TechboxEmbedBuilder.() -> Unit) =
+        message.reply(TechboxEmbedBuilder().apply(body).build()).queue()
 
 }
