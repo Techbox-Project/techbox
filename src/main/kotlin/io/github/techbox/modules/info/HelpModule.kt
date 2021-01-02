@@ -5,7 +5,6 @@ import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.commands.*
 import io.github.techbox.data.Config.prefix
 import io.github.techbox.utils.addField
-import io.github.techbox.utils.nameAndDiscriminator
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.model.BoundExtractedResult
 import net.dv8tion.jda.api.EmbedBuilder
@@ -54,7 +53,7 @@ class HelpModule {
             )
 
             setFooter(
-                "${commandRegistry.commands.size} commands | Requested by ${author.nameAndDiscriminator}",
+                "${commandRegistry.commands.size} commands | Requested by ${author.asTag}",
                 author.effectiveAvatarUrl
             )
 
@@ -134,7 +133,7 @@ class HelpModule {
                     }
 
                     it.setFooter(
-                        "${commands.size} commands | Requested by ${author.nameAndDiscriminator}",
+                        "${commands.size} commands | Requested by ${author.asTag}",
                         author.effectiveAvatarUrl
                     )
                 }.build()
