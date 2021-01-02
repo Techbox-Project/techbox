@@ -1,7 +1,7 @@
 package io.github.techbox.core.modules.commands
 
 import io.github.techbox.core.modules.ModuleRegistry
-import net.dv8tion.jda.api.EmbedBuilder
+import io.github.techbox.utils.TechboxEmbedBuilder
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
@@ -36,22 +36,24 @@ class Command(
     }
 
     override fun onHelp(context: CommandContext?): MessageEmbed {
-        val builder = EmbedBuilder()
-        val help = if (helpHandler != null) HelpReceiver(context).apply(helpHandler) else HelpReceiver(context)
-        builder.setColor(Color.GREEN)
-        builder.setAuthor(help.title ?: "${aliases[0].capitalize()} Command")
-        val effectiveAliases = if (help.aliases.isEmpty()) aliases else help.aliases
-        if (effectiveAliases.size > 1) {
-            builder.addField(
-                "Aliases: ",
-                effectiveAliases.asSequence().drop(1).joinToString("` `", "`", "`"),
-                false)
+        val builder = TechboxEmbedBuilder().apply {
+            val help = if (helpHandler != null) HelpReceiver(context).apply(helpHandler) else HelpReceiver(context)
+            color = Color.GREEN
+            authorName = help.title ?: "${aliases[0].capitalize()} Command"
+            val effectiveAliases = if (help.aliases.isEmpty()) aliases else help.aliases
+            if (effectiveAliases.size > 1) {
+                field(
+                    "Aliases: ",
+                    effectiveAliases.asSequence().drop(1).joinToString("` `", "`", "`")
+                )
+            }
+            if (help.fields.isEmpty()) {
+                description = "No information has been provided for this command."
+            } else {
+                help.fields.forEach { fields.add(it) }
+            }
         }
-        if (help.fields.isEmpty()) {
-            builder.setDescription("No information has been provided for this command.")
-        } else {
-            help.fields.forEach { builder.addField(it) }
-        }
+
         return builder.build()
     }
 }

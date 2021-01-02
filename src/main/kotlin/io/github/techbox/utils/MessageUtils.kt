@@ -12,7 +12,7 @@ class TechboxEmbedBuilder {
     var title: String? = null
     var titleURL: String? = null
 
-    var author: String? = null
+    var authorName: String? = null
     var authorURL: String? = null
     var authorAvatar: String? = null
 
@@ -24,9 +24,7 @@ class TechboxEmbedBuilder {
     var thumbnail: String? = null
     var description: String? = null
     var timestamp: TemporalAccessor? = null
-    var fields: Fields = Fields()
-
-    fun fields(body: Fields.() -> Unit) = Fields().apply(body)
+    var fields: MutableList<Field> = ArrayList()
 
     fun field(name: String, value: String, inline: Boolean = false) =
         fields.add(Field(name, value, inline))
@@ -37,7 +35,7 @@ class TechboxEmbedBuilder {
             .setImage(image)
             .setTitle(title, titleURL)
             .setDescription(description)
-            .setAuthor(author, authorURL, authorAvatar)
+            .setAuthor(authorName, authorURL, authorAvatar)
             .setFooter(footer, footerIcon)
             .setTimestamp(timestamp)
             .setColor(color)
@@ -47,15 +45,4 @@ class TechboxEmbedBuilder {
             }
             .build()
     }
-}
-
-class Fields {
-    private val list: MutableList<Field> = ArrayList()
-
-    fun blank(inline: Boolean = false) =
-        add(Field(ZERO_WIDTH_SPACE, ZERO_WIDTH_SPACE, inline))
-
-    fun add(field: Field) = list.add(field)
-
-    operator fun iterator() = list.iterator()
 }

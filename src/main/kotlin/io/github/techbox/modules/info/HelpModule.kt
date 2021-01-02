@@ -4,10 +4,9 @@ import io.github.techbox.TechboxLauncher
 import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.commands.*
 import io.github.techbox.data.Config.prefix
-import io.github.techbox.utils.addField
+import io.github.techbox.utils.TechboxEmbedBuilder
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.model.BoundExtractedResult
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 
@@ -43,19 +42,16 @@ class HelpModule {
 
     fun CommandContext.sendHelp() {
         replyEmbed {
-            setAuthor("Techbox | Help")
+            authorName = "Techbox | Help"
 
-            setDescription(
+            description =
                 """
-            Here's all the cmmands I have available.
+            Here's all the commands I have available.
             To check command usage, use `${usedPrefix}help <command>`
         """
-            )
 
-            setFooter(
-                "${commandRegistry.commands.size} commands | Requested by ${author.asTag}",
-                author.effectiveAvatarUrl
-            )
+            footer = "${commandRegistry.commands.size} commands | Requested by ${author.asTag}"
+            footerIcon = author.effectiveAvatarUrl
 
             Category.values().forEach { category ->
                 var count = 0
@@ -68,7 +64,7 @@ class HelpModule {
                     .toList()
 
                 if (command.isNotEmpty()) {
-                    addField(
+                    field(
                         "${category.categoryName} ($count)",
                         commands.joinToString(prefix = "`", separator = "` `", postfix = "`"),
                         false
@@ -110,32 +106,30 @@ class HelpModule {
                 help = (toHelp as ICommand).onHelp(this)
             }
             is Category -> {
-                help = EmbedBuilder().also {
-                    it.setAuthor("Techbox | Help: ${toHelp.categoryName}")
-                    it.setDescription(
-                        """
-                    Here's all the category's commands.
-                    To check the command usage, type `${prefix[0]}help <command>`.
-                """
-                    )
+                help = TechboxEmbedBuilder().apply {
+                    authorName = "Techbox | Help: ${toHelp.categoryName}"
+                    description = """
+                        Here's all the category's commands.
+                        To check the command usage, type `${prefix[0]}help <command>`.
+                    """
 
                     val commands = commandRegistry.commands
-                        .map { it.value }
+                        .map {
+                            it.value
+                        }
                         .filter { it.category == toHelp }
                         .map { it.aliases[0] }
                         .sorted()
                         .toList()
 
                     if (commands.isNotEmpty()) {
-                        it.addField("Commands:", commands.joinToString(prefix = "`", separator = "` `", postfix = "`"))
+                        field("Commands:", commands.joinToString(prefix = "`", separator = "` `", postfix = "`"))
                     } else {
-                        it.setDescription("Nobody here but us chickens.")
+                        description = "Nobody here but us chickens."
                     }
 
-                    it.setFooter(
-                        "${commands.size} commands | Requested by ${author.asTag}",
-                        author.effectiveAvatarUrl
-                    )
+                    footer = "${commands.size} commands | Requested by ${author.asTag}"
+                    footerIcon = author.effectiveAvatarUrl
                 }.build()
             }
             null -> {
