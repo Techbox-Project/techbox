@@ -10,6 +10,7 @@ import io.github.techbox.core.modules.commands.CommandProcessor
 import io.github.techbox.core.modules.commands.CommandRegistry
 import io.github.techbox.core.shard.Shard
 import io.github.techbox.data.Config
+import io.github.techbox.data.DatabaseProvider
 import io.github.techbox.utils.formatDuration
 import io.github.techbox.utils.logger
 import kotlinx.coroutines.CoroutineName
@@ -49,6 +50,11 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
 
 
     fun start() {
+        log.info("Connecting to the database...")
+        DatabaseProvider.connect()
+        DatabaseProvider.runMigrations()
+
+        log.info("Loading modules...")
         val modules = lookForAnnotatedOn("io.github.techbox.modules", Module::class.java)
 
         for (module in modules) {
@@ -58,6 +64,9 @@ class Techbox(private val config: Config) : CoroutineScope by CoroutineScope(Cor
                 log.error("Caught error while registering module", e)
             }
         }
+        log.info("Loaded " + moduleRegistry.modules.size + " modules and " + commandRegistry.commands.size + " successfully.")
+
+
 
         startShards()
     }
