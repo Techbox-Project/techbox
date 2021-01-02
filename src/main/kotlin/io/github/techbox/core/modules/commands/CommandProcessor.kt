@@ -1,6 +1,7 @@
 package io.github.techbox.core.modules.commands
 
 import io.github.techbox.TechboxLauncher
+import io.github.techbox.data.entities.TechboxGuild
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
 
@@ -10,6 +11,8 @@ class CommandProcessor {
         var rawCmd = event.message.contentRaw
 
         val prefixes = TechboxLauncher.config.prefix
+        val techboxGuild = TechboxGuild.findById(event.guild.idLong) ?: TechboxGuild.new(event.guild.idLong) {}
+        val customPrefix = techboxGuild.commandPrefix
 
         var usedPrefix = prefixes.firstOrNull { rawCmd.toLowerCase().startsWith(it) }
 
@@ -18,6 +21,10 @@ class CommandProcessor {
         when {
             usedPrefix != null -> {
                 rawCmd = rawCmd.substring(usedPrefix.length)
+            }
+            customPrefix != null && rawCmd.startsWith(customPrefix) -> {
+                rawCmd = rawCmd.substring(customPrefix.length)
+                usedPrefix = customPrefix
             }
             rawCmd.startsWith("$selfUserMention ") -> {
                 rawCmd = rawCmd.substring("$selfUserMention ".length)
@@ -36,7 +43,7 @@ class CommandProcessor {
         val cmdName = args[0]
         args = args.drop(1)
 
-        TechboxLauncher.core.commandRegistry.execute(CommandContext(usedPrefix, event.message, cmdName, args))
+        TechboxLauncher.core.commandRegistry.execute(CommandContext(usedPrefix, event.message, cmdName, args, techboxGuild))
         return true
     }
 
