@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.21")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2-native-mt")
     implementation("net.dv8tion:JDA:4.2.0_225")
     implementation("com.fasterxml.jackson.core:jackson-core:2.12.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.0")
