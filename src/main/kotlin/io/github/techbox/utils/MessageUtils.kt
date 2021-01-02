@@ -28,8 +28,8 @@ class TechboxEmbedBuilder {
 
     fun fields(body: Fields.() -> Unit) = Fields().apply(body)
 
-    fun field(body: TechboxFieldBuilder.() -> Unit) =
-        fields.add(body)
+    fun field(name: String, value: String, inline: Boolean = false) =
+        fields.add(Field(name, value, inline))
 
     fun build(): MessageEmbed {
         return EmbedBuilder()
@@ -57,20 +57,5 @@ class Fields {
 
     fun add(field: Field) = list.add(field)
 
-    fun add(body: TechboxFieldBuilder.() -> Unit) =
-        add(TechboxFieldBuilder().build(body))
-
     operator fun iterator() = list.iterator()
-}
-
-class TechboxFieldBuilder {
-    lateinit var name: String
-    lateinit var value: String
-    var inline = false
-
-    fun build(body: TechboxFieldBuilder.() -> Unit): Field {
-        body()
-        return Field(name, value, inline)
-    }
-
 }
