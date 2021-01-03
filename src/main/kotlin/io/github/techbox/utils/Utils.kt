@@ -53,6 +53,9 @@ private fun formatUnit(amount: Long, baseName: String): String {
 
 fun EmbedBuilder.addField(name: String, value: String) = addField(name, value, false)
 
+fun List<*>.joinToStringOrNull(separator: String): String? =
+    if (isEmpty()) null else joinToString(separator)
+
 fun Message.onReactionAdd(timeoutSeconds: Long = 120, body: ReactionListener.ReactionOperation.() -> Unit): Unit = run {
     val op = ReactionListener.ReactionOperation()
     body.invoke(op)

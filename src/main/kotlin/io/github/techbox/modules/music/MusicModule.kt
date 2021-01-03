@@ -3,6 +3,7 @@ package io.github.techbox.modules.music
 import io.github.techbox.TechboxLauncher
 import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.commands.command
+import io.github.techbox.utils.joinToStringOrNull
 import net.dv8tion.jda.api.entities.TextChannel
 import java.net.URL
 
@@ -12,10 +13,8 @@ class MusicModule {
     fun onLoad() {
         command("play") {
             execute {
-                if (args.isEmpty()) {
-                    return@execute reply("You need to specify something to play.")
-                }
-                var query = args.joinToString(" ")
+                var query = args.joinToStringOrNull(" ")
+                    ?: return@execute reply("You need to specify something to play.")
 
                 try {
                     URL(query)
