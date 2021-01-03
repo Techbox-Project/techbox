@@ -14,6 +14,7 @@ configure<ApplicationPluginConvention> {
 repositories {
     mavenCentral()
     jcenter()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -37,6 +38,12 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.25.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.25.1")
     implementation("org.postgresql:postgresql:42.2.18")
+
+    // Music
+    implementation("com.github.FredBoat:Lavalink-Client:7492a36") {
+        exclude("com.sedmelluq", "lavaplayer")
+    }
+    implementation("com.sedmelluq:lavaplayer:1.3.66")
 
     // Utils
     implementation("me.xdrop:fuzzywuzzy:1.3.1")

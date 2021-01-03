@@ -6,6 +6,10 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.nio.file.Paths
+import java.util.ArrayList
+
+
+
 
 
 object Config {
@@ -13,13 +17,16 @@ object Config {
     private val log: Logger = LoggerFactory.getLogger(Config::class.java)
 
     var token: String? = null
+    var clientId: String? = null
     var prefix = arrayOf("t+")
     var shardCount = 0
     var dbHost = "localhost"
     var dbPort = 5432
-    val dbName = "techbox"
+    var dbName = "techbox"
     var dbUser = "techbox"
     var dbPassword = "techbox"
+    var lavalinkNodes: List<String> = ArrayList()
+    var lavalinkPass: String? = null
 
     init {
         val configPath = Paths.get("config.json")
@@ -43,6 +50,14 @@ object Config {
             this.token = config.token
             this.prefix = config.prefix
             this.shardCount = config.shardCount
+            this.dbHost = config.dbHost
+            this.dbPort = config.dbPort
+            this.dbName = config.dbName
+            this.dbUser = config.dbUser
+            this.dbPassword = config.dbPassword
+            this.lavalinkNodes = config.lavalinkNodes
+            this.lavalinkPass = config.lavalinkPass
+            FileUtils.write(configPath, FileUtils.jsonMapper.writeValueAsString(this))
         } catch (e: IOException) {
             throw UncheckedIOException(e)
         }
