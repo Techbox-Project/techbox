@@ -23,7 +23,7 @@ dependencies {
     implementation("net.dv8tion:JDA:4.2.0_225")
 
     // JSON
-    implementation("com.fasterxml.jackson.core:jackson-core:2.12.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.12.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.0")
 
     // Core
