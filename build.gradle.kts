@@ -24,7 +24,7 @@ dependencies {
 
     // JSON
     implementation("com.fasterxml.jackson.core:jackson-core:2.12.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
 
     // Core
     implementation("com.google.guava:guava:30.1-jre")
