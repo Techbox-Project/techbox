@@ -1,11 +1,10 @@
 package io.github.techbox.utils
 
-import io.github.techbox.TechboxLauncher
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 
-
-fun extractUserFromString(
+inline fun extractUserFromString(
     input: String,
     usersInContext: List<User>? = null,
     guild: Guild? = null,
@@ -13,7 +12,8 @@ fun extractUserFromString(
     extractUserViaNameAndDiscriminator: Boolean = true,
     extractUserViaEffectiveName: Boolean = true,
     extractUserViaUsername: Boolean = true,
-    extractUserViaUserIdRetrieval: Boolean = true
+    extractUserViaUserIdRetrieval: Boolean = true,
+    crossinline extractor: (String) -> User?
 ): User? {
     if (input.isEmpty())
         return null
@@ -55,15 +55,12 @@ fun extractUserFromString(
         }
     }
 
-    try {
-        if (extractUserViaUserIdRetrieval) {
-            val user = TechboxLauncher.core.shardManager.retrieveUserById(input).complete()
+    if (!extractUserViaUserIdRetrieval)
+        return null
 
-            if (user != null)
-                return user
-        }
-    } catch (e: Exception) {
-    }
-
-    return null
+    return runCatching {
+        extractor(input)
+    }.getOrNull()
 }
+
+inline fun Message.replyError(content: String) = reply("❌ $content")

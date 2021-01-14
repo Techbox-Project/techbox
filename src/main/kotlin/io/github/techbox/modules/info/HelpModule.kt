@@ -1,9 +1,7 @@
 package io.github.techbox.modules.info
 
-import io.github.techbox.TechboxLauncher
 import io.github.techbox.core.modules.Module
 import io.github.techbox.core.modules.commands.*
-import io.github.techbox.data.Config.prefix
 import io.github.techbox.utils.TechboxEmbedBuilder
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.model.BoundExtractedResult
@@ -12,7 +10,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed
 
 @Module
 class HelpModule {
-    val commandRegistry = TechboxLauncher.core.commandRegistry
 
     fun onLoad() {
         command("help", "h") {
@@ -50,12 +47,12 @@ class HelpModule {
             To check command usage, use `${usedPrefix}help <command>`
         """
 
-            footer = "${commandRegistry.commands.size} commands | Requested by ${author.asTag}"
+            footer = "${core.commandRegistry.commands.size} commands | Requested by ${author.asTag}"
             footerIcon = author.effectiveAvatarUrl
 
             Category.values().forEach { category ->
                 var count = 0
-                val commands = commandRegistry.commands
+                val commands = core.commandRegistry.commands
                     .map { it.value }
                     .filter { it.category == category }
                     .map { it.aliases[0] }
@@ -74,9 +71,9 @@ class HelpModule {
         }
     }
 
-    fun findAnything(args: String): Any? {
-        return commandRegistry.commands[args.toLowerCase()]
-            ?: commandRegistry.commands[commandRegistry.aliases.getOrDefault(args.toLowerCase(), "")]
+    fun CommandContext.findAnything(args: String): Any? {
+        return core.commandRegistry.commands[args.toLowerCase()]
+            ?: core.commandRegistry.commands[core.commandRegistry.aliases.getOrDefault(args.toLowerCase(), "")]
             ?: Category.values()
                 .firstOrNull {
                     it.name.equals(args, ignoreCase = true) || it.categoryName.equals(
@@ -91,7 +88,7 @@ class HelpModule {
         var extra: String? = null
         if (toHelp == null) {
             val match: BoundExtractedResult<String> = FuzzySearch.extractOne(
-                args.toLowerCase(), commandRegistry.helpPossibilities
+                args.toLowerCase(), core.commandRegistry.helpPossibilities
             ) { it -> it }
             if (match.score > 70) {
                 val newArg = match.referent
@@ -110,10 +107,10 @@ class HelpModule {
                     authorName = "Techbox | Help: ${toHelp.categoryName}"
                     description = """
                         Here's all the category's commands.
-                        To check the command usage, type `${prefix[0]}help <command>`.
+                        To check the command usage, type `${core.config.prefix}help <command>`.
                     """
 
-                    val commands = commandRegistry.commands
+                    val commands = core.commandRegistry.commands
                         .map {
                             it.value
                         }

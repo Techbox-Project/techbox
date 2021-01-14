@@ -1,4 +1,4 @@
-package io.github.techbox.data.tables
+package io.github.techbox.database.tables
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 

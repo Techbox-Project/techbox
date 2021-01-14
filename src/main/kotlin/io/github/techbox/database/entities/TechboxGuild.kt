@@ -1,6 +1,6 @@
-package io.github.techbox.data.entities
+package io.github.techbox.database.entities
 
-import io.github.techbox.data.tables.TechboxGuilds
+import io.github.techbox.database.tables.TechboxGuilds
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

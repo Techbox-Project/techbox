@@ -2,7 +2,7 @@ package io.github.techbox.utils
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
-import net.dv8tion.jda.api.entities.MessageEmbed.*
+import net.dv8tion.jda.api.entities.MessageEmbed.Field
 import java.awt.Color
 import java.time.temporal.TemporalAccessor
 

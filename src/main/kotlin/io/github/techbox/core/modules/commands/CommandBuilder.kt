@@ -1,6 +1,6 @@
 package io.github.techbox.core.modules.commands
 
-import io.github.techbox.TechboxLauncher
+import io.github.techbox.core.Techbox
 import net.dv8tion.jda.api.Permission
 
 
@@ -34,9 +34,9 @@ inline fun command(vararg command: String, block: CommandBuilder.() -> Unit): IC
     val icommand = CommandBuilder(command as Array<String>).apply(block).build()
     if (icommand.autoRegister) {
         val currentClassName = Thread.currentThread().stackTrace[1].className
-        val currentModule = TechboxLauncher.core.moduleRegistry.modules.values
+        val currentModule = Techbox.INSTANCE.moduleRegistry.modules.values
             .firstOrNull { it.clazz.name == currentClassName }
-        val commandRegistry = TechboxLauncher.core.commandRegistry
+        val commandRegistry = Techbox.INSTANCE.commandRegistry
         if (currentModule == null) {
             commandRegistry.log.error("Class $currentClassName tried to auto register command but is not a registered module.")
         } else {

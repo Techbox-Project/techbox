@@ -19,8 +19,9 @@ class BanModule {
             execute {
                 val userName = args.getOrNull(0)
                     ?: return@execute reply("❌ You need to specify a user. Check `${usedPrefix}help ban` for more information.")
-                val user = extractUserFromString(userName, message.mentionedUsers, message.guild)
-                    ?: return@execute reply("❌ Sorry, I couldn't find any user named $userName")
+                val user = extractUserFromString(userName, message.mentionedUsers, message.guild) {
+                    core.shardManager.retrieveUserById(it).complete()
+                } ?: return@execute reply("❌ Sorry, I couldn't find any user named $userName")
                 var reason = args.drop(1).joinToString(" ")
                 val message =
                     replyBlocking("❔ Are you sure you want to ban ${user.asMention} (${user.asTag} / ${user.id})" +

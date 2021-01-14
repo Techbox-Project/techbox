@@ -1,7 +1,7 @@
 package io.github.techbox.core.modules.commands
 
-import io.github.techbox.data.entities.TechboxGuild
-import net.dv8tion.jda.api.EmbedBuilder
+import io.github.techbox.core.Techbox
+import io.github.techbox.database.entities.TechboxGuild
 import io.github.techbox.utils.TechboxEmbedBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -11,7 +11,8 @@ class CommandContext(
     val message: Message,
     val command: String,
     val args: List<String>,
-    val techboxGuild: TechboxGuild?
+    val techboxGuild: TechboxGuild?,
+    val core: Techbox
 ) {
     val author get() = message.author
     val member get() = message.member

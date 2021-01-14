@@ -20,6 +20,6 @@ class LogFilter : Filter<ILoggingEvent>() {
     }
 
     companion object {
-        val LEVEL: Level = Level.INFO
+        val LEVEL: Level = Level.DEBUG
     }
 }

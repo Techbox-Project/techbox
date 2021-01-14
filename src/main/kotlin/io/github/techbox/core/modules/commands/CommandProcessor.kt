@@ -1,50 +1,78 @@
 package io.github.techbox.core.modules.commands
 
-import io.github.techbox.TechboxLauncher
-import io.github.techbox.data.entities.TechboxGuild
+import io.github.techbox.core.Techbox
+import io.github.techbox.database.entities.TechboxGuild
+import io.github.techbox.utils.logger
+import kotlinx.coroutines.*
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import org.slf4j.Logger
 
+class CommandProcessor(val techbox: Techbox) {
 
-class CommandProcessor {
+    companion object {
 
-    suspend fun run(event: GuildMessageReceivedEvent): Boolean {
-        var rawCmd = event.message.contentRaw
+        private val log: Logger = logger<CommandProcessor>()
+        const val MENTION_EXALAMATION_INDEX = 2
 
-        val prefixes = TechboxLauncher.config.prefix
-        val techboxGuild = TechboxGuild.findById(event.guild.idLong) ?: TechboxGuild.new(event.guild.idLong) {}
-        val customPrefix = techboxGuild.commandPrefix
+    }
 
-        var usedPrefix = prefixes.firstOrNull { rawCmd.toLowerCase().startsWith(it) }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun handle(event: GuildMessageReceivedEvent) {
+        // TODO: cache guilds previously searched
+        val job = techbox.async(NonCancellable + Dispatchers.IO + CoroutineName("Command Processor Guild Search")) {
+            techbox.getGuild(event.guild.idLong)
+        }
 
-        val selfUserMention = event.jda.selfUser.asMention
-        val selfMemberMention = event.jda.selfUser.asMention.replace("@", "@!")
-        when {
-            usedPrefix != null -> {
-                rawCmd = rawCmd.substring(usedPrefix.length)
+        job.invokeOnCompletion { error ->
+            if (error != null) {
+                log.error("Failed to load guild ${event.guild.idLong}: $error")
+                log.trace(null, error)
+                return@invokeOnCompletion
             }
-            customPrefix != null && rawCmd.startsWith(customPrefix) -> {
-                rawCmd = rawCmd.substring(customPrefix.length)
-                usedPrefix = customPrefix
-            }
-            rawCmd.startsWith("$selfUserMention ") -> {
-                rawCmd = rawCmd.substring("$selfUserMention ".length)
-                usedPrefix = selfUserMention
-            }
-            rawCmd.startsWith("$selfMemberMention ") -> {
-                rawCmd = rawCmd.substring("$selfMemberMention ".length)
-                usedPrefix = selfUserMention
-            }
-            else -> {
-                return false
+
+            process(job.getCompleted(), event)
+        }
+    }
+
+    private fun execute(guild: TechboxGuild, prefix: String, message: Message, command: String, args: List<String>) {
+        log.debug("Executing $command...")
+        techbox.launch(Dispatchers.IO + CoroutineName("Command Processor: $command")) {
+            techbox.commandRegistry.execute(CommandContext(prefix, message, command, args, guild, techbox))
+        }
+    }
+
+    private fun process(guild: TechboxGuild, event: GuildMessageReceivedEvent) {
+        val rawCmd = event.message.contentRaw.toLowerCase()
+        val (givenCommand, commandArgs) = rawCmd.split(" ").run {
+            first() to lazy { drop(1) }
+        }
+
+        // removes equal prefixes if defined and equal.
+        val prefixes = listOfNotNull(techbox.config.prefix, guild.commandPrefix).distinct().map { it.toLowerCase() }
+
+        // check for prefixes first, fast-path
+        for (prefix in prefixes) {
+            val check = givenCommand.substring(prefix.indices)
+            if (check == prefix) {
+                execute(guild, prefix, event.message, givenCommand.substring(prefix.length), commandArgs.value)
+                return
             }
         }
 
-        var args = rawCmd.split(" ")
-        val cmdName = args[0]
-        args = args.drop(1)
+        // check for mentions, slow-path.
+        val selfUserMention = event.jda.selfUser.asMention
+        if (givenCommand.length < selfUserMention.length)
+            return
 
-        TechboxLauncher.core.commandRegistry.execute(CommandContext(usedPrefix, event.message, cmdName, args, techboxGuild))
-        return true
+        // mention, only
+        val args = commandArgs.value
+        if (args.isEmpty())
+            return
+
+        val mentionWithoutExcalamation = givenCommand.removeRange(2, 3) // 2 = exclamation index
+        if (mentionWithoutExcalamation == selfUserMention)
+            execute(guild, selfUserMention, event.message, args.first(), args.drop(1))
     }
 
 }

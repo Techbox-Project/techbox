@@ -1,9 +1,6 @@
 package io.github.techbox.core.modules.commands
 
-import io.github.techbox.TechboxLauncher
-import io.github.techbox.data.Config.prefix
 import net.dv8tion.jda.api.entities.MessageEmbed
-
 
 class HelpReceiver(val commandContext: CommandContext?) {
     var title: String? = null
@@ -25,14 +22,14 @@ class HelpReceiver(val commandContext: CommandContext?) {
         }
 
 
-    class UsageReceiver {
+    inner class UsageReceiver {
         var usageNodes: MutableList<String> = mutableListOf()
         fun usage(command: String, description: String) {
-            usageNodes.add("`${prefix[0]}$command` - $description")
+            usageNodes.add("`${commandContext!!.core.config.prefix}$command` - $description")
         }
 
         fun usage(command: String, extra: String, description: String) {
-            usageNodes.add("`${prefix[0]}$command` $extra - $description")
+            usageNodes.add("`${commandContext!!.core.config.prefix}$command` $extra - $description")
         }
 
         fun textUsage(value: String) {
@@ -58,7 +55,7 @@ class HelpReceiver(val commandContext: CommandContext?) {
 
     fun example(vararg values: String, withPrefix: Boolean = true) {
         val stringValues = values.toList()
-        val value = (if (withPrefix) stringValues.map { "${TechboxLauncher.config.prefix[0]}$it" } else stringValues)
+        val value = (if (withPrefix) stringValues.map { "${commandContext!!.core.config.prefix[0]}$it" } else stringValues)
             .joinToString(prefix = "```\n", separator = "\n", postfix = "\n```")
 
         fields.add(MessageEmbed.Field("Example:", value, false))
