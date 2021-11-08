@@ -34,7 +34,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.jetbrains.exposed:exposed-core:0.25.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.25.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.25.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.36.2")
     implementation("org.postgresql:postgresql:42.2.18")
 
     // Utils
