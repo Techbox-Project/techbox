@@ -20,7 +20,7 @@ dependencies {
     // Base
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.21")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    implementation("org.jetbrains.kotlinx:atomicfu:0.15.0")
+    implementation("org.jetbrains.kotlinx:atomicfu:0.18.3")
     implementation("net.dv8tion:JDA:4.2.0_225")
 
     // Core
