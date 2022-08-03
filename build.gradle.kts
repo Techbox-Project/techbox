@@ -33,7 +33,7 @@ dependencies {
     // Database
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.jetbrains.exposed:exposed-core:0.25.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.25.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.39.2")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.25.1")
     implementation("org.postgresql:postgresql:42.2.18")
 
